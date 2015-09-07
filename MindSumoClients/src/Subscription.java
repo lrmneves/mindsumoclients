@@ -15,7 +15,7 @@ public class Subscription {
 		this.endDate = date;
 		type = SubscriptionType.ONE_OFF;
 	}
-
+	//If there is another record of that id, update subscription info
 	public void updateSubscription(Date date, long amount){
 		this.totalAmount+= amount;
 
@@ -44,7 +44,7 @@ public class Subscription {
 		}
 	}
 
-	
+	//Convert from ms to the day type
 	private int convertDuration(long duration ){
 		
 		int days =  (int)  Math.ceil(duration / (1000*60*60*24));

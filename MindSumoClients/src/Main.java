@@ -19,12 +19,12 @@ public class Main {
 		
 		HashMap<String,Subscription> subscriptionMap = new HashMap<>();
 		LinkedHashMap<Integer,Long> yearRevenueMap = new LinkedHashMap<>();
-		
+		//Initialize revenue array
 		for(int i = 1966; i < 2015;i++){
 			yearRevenueMap.put(i, (long) 0);
 		}
 		
-		String file = "/Users/lrmneves/workspace/MindSumo/clientData/"
+		String file = "files/"
 				+ "subscription_report.csv";
 		BufferedReader br = null;
 		String line;
@@ -32,6 +32,7 @@ public class Main {
 		DateFormat format = new SimpleDateFormat("mm/dd/yy", Locale.ENGLISH);
 		Calendar calendar = Calendar.getInstance();
 		String id;
+		
 		try {
 			
 			br = new BufferedReader(new FileReader(file));
@@ -85,6 +86,56 @@ public class Main {
 		for(String sub : subscriptionMap.keySet()){
 			System.out.println(subscriptionMap.get(sub));
 		}
+		//Cmpute Bonus question 1.
+		long maxLoss = 0;
+		long maxGrowth = 0;
+		
+		int maxLossYear = 0;
+		int maxGrowthYear = 0;
+		int count =0;
+		int lastYear = 0;
+		double percentageLoss = 0;
+		double percentageGrowth= 0;
+		
+		for(Integer revYear : yearRevenueMap.keySet()){
+			if(count >0){
+				long diff = yearRevenueMap.get(revYear) - 
+						yearRevenueMap.get(lastYear);
+				if(diff > 0){
+					if(maxGrowth < diff) {
+						maxGrowth = diff;
+						maxGrowthYear = revYear;
+						percentageGrowth = 100 * diff / yearRevenueMap.get(lastYear);;
+					}
+				}else if (diff < 0){
+					if(maxLoss < Math.abs(diff)) {
+						maxLoss =  Math.abs(diff);
+						maxLossYear = revYear;
+						percentageLoss = 100 * Math.abs(diff)/yearRevenueMap.get(lastYear);
+					}
+				}
+			}
+			lastYear = revYear;
+			count++;
+		}
+		
+		System.out.println("Highest Revenue Growth was in " +
+		maxGrowthYear+ " with a growth of "+percentageGrowth+"% and highest "
+				+ "revenue loss was in " +maxLossYear +" with a loss of "
+				+percentageLoss + "%");
+		
+		//Estimate Bonus Question 2
+		double growthSum =0;
+		int start = 2005;
+		int target = 2015;
+		for( int i = start; i < target ; i ++){
+			growthSum += (double)(yearRevenueMap.get(i) - yearRevenueMap.get(i-1))/ yearRevenueMap.get(i-1);
+		}
+		double averageGrowth = (double) growthSum/(target-start);
+		
+		System.out.println("Annual Revenue for " +target + " will be " + 
+				((int) (yearRevenueMap.get(target-1) + 
+				yearRevenueMap.get(target-1)*averageGrowth)));
 
 	}
 
